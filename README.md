@@ -5,8 +5,9 @@
 - This project is licensed under the GPL 3.0 license.
 
 
-
-### ReadMe of the original project <br> (https://github.com/omair18/LSD-SLAM-Android)
+README of the Original Project
+---
+forked: https://github.com/omair18/LSD-SLAM-Android <br>
 
 LSD-SLAM is a novel approach to real-time monocular SLAM. It is fully direct (i.e. does not use keypoints / features) and creates large-scale, 
 semi-dense maps in real-time on a laptop. For more information see
