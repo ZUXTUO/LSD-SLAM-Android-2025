@@ -1,7 +1,10 @@
+import groovy.transform.CompileStatic
+
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
 
+@CompileStatic
 String getVersionString() {
     //String v = VERSION_NAME.replaceAll(".(0)\$", "." + buildNumber())
     //v = isTag() ? v : v + "-SNAPSHOT"
@@ -19,46 +22,46 @@ version = getVersionString()
 //    status = 'integration'
 //}
 
-task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
 
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
     reports {
-        xml.enabled = true
-        html.enabled = true
+        // xml.enabled = true
+//        html.enabled = true
     }
 
-    jacocoClasspath = configurations['androidJacocoAnt']
 
+    jacocoClasspath = configurations.jacocoAnt
     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
-    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-    def mainSrc = "${project.projectDir}/src/main/java"
-
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-    executionData = files(["${buildDir}/jacoco/testDebugUnitTest.exec",
-                           "${buildDir}/outputs/code-coverage/connected/coverage.ec"
-            ])
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/javac/debug/classes", excludes: fileFilter) // 경로 확인
+    def mainSrc = "${project.projectDir}/src/main/java" // 경로 확인
+//    sourceDirectories = files([mainSrc])
+//   classDirectories = files([debugTree])
+//    executionData = files(["${buildDir}/jacoco/testDebugUnitTest.exec", "${buildDir}/outputs/code-coverage/connected/coverage.ec"]) // 경로 확인
 }
 
+
 android {
+
+//namespace 'org.rajawali3d'
     //compileSdkVersion rootProject.compileSdk
     //buildToolsVersion rootProject.buildTools
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 27
         //targetSdkVersion rootProject.targetSdk
-       // versionCode rootProject.versionCode
+        // versionCode rootProject.versionCode
         //versionName rootProject.versionName
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -79,12 +82,12 @@ android {
 
 dependencies {
     //compile project.depSupportAnnotations
-    compile 'com.android.support:support-annotations:23.1.1'
-    androidTestCompile 'junit:junit:4.12'
+    api 'com.android.support:support-annotations:23.1.1'
+    androidTestImplementation 'junit:junit:4.12'
 
-    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestImplementation 'com.android.support.test:runner:0.4'
     // Set this dependency to use JUnit 4 rules
-    androidTestCompile 'com.android.support.test:rules:0.4'
+    androidTestImplementation 'com.android.support.test:rules:0.4'
 }
 
 //apply from: '../maven_push.gradle'
