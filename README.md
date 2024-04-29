@@ -1,5 +1,6 @@
 # LSD-SLAM: Large-Scale Direct Monocular SLAM ANDROID
 
+- You can download the APK(Experimental) and test it right away.
 - I modified an old project to make it usable today (2024).
 - This project is licensed under the GPL 3.0 license.
 
