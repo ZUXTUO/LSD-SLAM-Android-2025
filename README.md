@@ -1,5 +1,10 @@
 # LSD-SLAM: Large-Scale Direct Monocular SLAM ANDROID
 
+- I modified an old project to make it usable today (2024).
+- This project is licensed under the GPL 3.0 license.
+
+## ReadMe of the original project <br> (https://github.com/omair18/LSD-SLAM-Android)
+
 LSD-SLAM is a novel approach to real-time monocular SLAM. It is fully direct (i.e. does not use keypoints / features) and creates large-scale, 
 semi-dense maps in real-time on a laptop. For more information see
 [http://vision.in.tum.de/lsdslam](http://vision.in.tum.de/lsdslam)
@@ -19,6 +24,3 @@ Run ndk-build inside JNI folder before running this app to get fresh compiled li
 
 #Note:
 All credit goes to authors of lsdslam. My contribution is only related to compilation for Android platform. 
-
-![ScreenShot](https://github.com/omair18/LSD-SLAM/blob/master/snap.png)
-
