@@ -2,7 +2,7 @@
 
 - You can download the APK(Experimental) and test it right away.
 - I modified an old project to make it usable today (2024).
-- This project is licensed under the GPL 3.0 license.
+- This project is licensed under the GPL 3.0 license.<br><br>
 
 
 README of the Original Project
