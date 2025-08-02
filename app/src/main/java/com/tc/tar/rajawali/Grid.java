@@ -16,6 +16,7 @@
 package com.tc.tar.rajawali;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import org.rajawali3d.materials.Material;
 import org.rajawali3d.math.vector.Vector3;
@@ -24,39 +25,59 @@ import org.rajawali3d.primitives.Line3D;
 import java.util.Stack;
 
 /**
- * Rajawali object which represents the 'floor' of the current scene.
- * This is a static grid placed in the scene to provide perspective in the
- * various views.
+ * Rajawali对象，表示当前场景的“地面”网格。
+ * 这是一个静态网格，用于在不同视图中提供透视参考。
  */
 public class Grid extends Line3D {
+    /**
+     * 构造函数，初始化地面网格
+     * @param size 网格总尺寸
+     * @param step 网格间隔
+     * @param thickness 线宽
+     * @param color 网格颜色
+     */
     public Grid(int size, int step, float thickness, int color) {
         super(calculatePoints(size, step), thickness, color);
         Material material = new Material();
         material.setColor(color);
         this.setMaterial(material);
+        // 日志：初始化地面网格成功
+        Log.d("Grid", "初始化地面网格成功，尺寸: " + size + "，步长: " + step + "，线宽: " + thickness + "，颜色: " + color);
     }
 
+    /**
+     * 计算网格所有顶点
+     * @param size 网格总尺寸
+     * @param step 网格间隔
+     * @return 顶点栈
+     */
     private static Stack<Vector3> calculatePoints(int size, int step) {
         Stack<Vector3> points = new Stack<Vector3>();
 
-        // Rows
+        // 生成行（沿Z轴方向的线）
         for (float i = -size / 2f; i <= size / 2f; i += step) {
-            points.add(new Vector3(i, 0, -size / 2f));
-            points.add(new Vector3(i, 0, size / 2f));
+            points.add(new Vector3(i, 0, -size / 2f)); // 起点
+            points.add(new Vector3(i, 0, size / 2f));  // 终点
         }
 
-        // Columns
+        // 生成列（沿X轴方向的线）
         for (float i = -size / 2f; i <= size / 2f; i += step) {
-            points.add(new Vector3(-size / 2f, 0, i));
-            points.add(new Vector3(size / 2f, 0, i));
+            points.add(new Vector3(-size / 2f, 0, i)); // 起点
+            points.add(new Vector3(size / 2f, 0, i));  // 终点
         }
 
         return points;
     }
 
+    /**
+     * 初始化方法，设置绘制模式为线段
+     * @param createVBOs 是否创建VBO
+     */
     @Override
     protected void init(boolean createVBOs) {
         super.init(createVBOs);
         setDrawingMode(GLES20.GL_LINES);
+        // 日志：设置网格绘制模式为GL_LINES
+        Log.d("Grid", "设置网格绘制模式为GL_LINES");
     }
 }

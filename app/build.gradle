@@ -1,24 +1,26 @@
 apply plugin: 'com.android.application'
 
 android {
-    //namespace 'com.tc.tar'
-    compileSdkVersion 27
-    buildToolsVersion '29.0.2'
+    namespace 'com.tc.tar'
+    compileSdkVersion 36
+
     defaultConfig {
-        applicationId "com.tc.tar_LSD"
-        minSdkVersion 27
-        targetSdkVersion 27
+        applicationId "com.tc.tar"
+        minSdkVersion 33
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        ndk{
-            abiFilters "armeabi-v7a", "x86"
+        ndk {
+            abiFilters "armeabi-v7a"
         }
+
         packagingOptions {
             exclude "lib/arm64-v8a/librealm-jni.so"
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,10 +31,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:24.2.1'
-    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.13.2'
     implementation project(path: ':rajawali')
 }

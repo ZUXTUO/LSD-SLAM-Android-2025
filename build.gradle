@@ -1,12 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        agp_version = '8.12.0'
+    }
     repositories {
         google()
         mavenCentral() // jcenter() 대신 mavenCentral() 사용
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0' // Gradle 버전과 호환되는지 확인
+        classpath "com.android.tools.build:gradle:$agp_version" // Gradle 버전과 호환되는지 확인
         classpath "org.jacoco:org.jacoco.core:0.8.8" // Jacoco 플러그인 버전
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

@@ -1,71 +1,81 @@
 package com.tc.tar;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Created by aarontang on 2017/4/17.
+ * 视频源类，负责相机的初始化、帧获取与管理
+ * 创建者：aarontang，日期：2017/4/17
  */
 
 public class VideoSource implements Camera.PreviewCallback {
 
     public static final String TAG = VideoSource.class.getSimpleName();
-    private static final int MAGIC_TEX_ID = 10;
-    private int mWidth;
-    private int mHeight;
+    private static final int MAGIC_TEX_ID = 10; // SurfaceTexture的魔法ID
+    private int mWidth;    // 预览宽度
+    private int mHeight;   // 预览高度
 
-    private Camera mCamera;
-    private SurfaceTexture mSurfaceTexture;
-    private byte[] mCurrentFrame;
-    private Object mFrameLock = new Object();
+    private Camera mCamera;                // 相机对象
+    private SurfaceTexture mSurfaceTexture;// SurfaceTexture对象
+    private byte[] mCurrentFrame;          // 当前帧数据
+    private Object mFrameLock = new Object(); // 帧数据锁
 
+    /**
+     * 构造函数，初始化相机
+     * @param context 上下文
+     * @param width 预览宽度
+     * @param height 预览高度
+     */
     public VideoSource(Context context, int width, int height) {
-        mCamera = getCameraInstance();
+        mCamera = getCameraInstance(); // 获取相机实例
         mWidth = width;
         mHeight = height;
         Camera.Parameters params = mCamera.getParameters();
-        params.setPreviewSize(mWidth, mHeight);
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        params.setPreviewFormat(ImageFormat.NV21);
+        params.setPreviewSize(mWidth, mHeight); // 设置预览分辨率
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); // 连续自动对焦
+        params.setPreviewFormat(ImageFormat.NV21); // 设置预览格式为NV21
         mCamera.setParameters(params);
         int format = params.getPreviewFormat();
+        // 添加回调缓冲区
         mCamera.addCallbackBuffer(new byte[mWidth * mHeight * ImageFormat.getBitsPerPixel(format) / 8]);
         mSurfaceTexture = new SurfaceTexture(MAGIC_TEX_ID);
     }
 
+    /**
+     * 启动相机预览
+     */
     public void start() {
         try {
-            mCamera.setPreviewCallbackWithBuffer(this);
-            mCamera.setPreviewTexture(mSurfaceTexture);
-            mCamera.startPreview();
+            mCamera.setPreviewCallbackWithBuffer(this); // 设置带缓冲区的回调
+            mCamera.setPreviewTexture(mSurfaceTexture); // 绑定SurfaceTexture
+            mCamera.startPreview(); // 启动预览
         } catch (IOException e) {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+            Log.d(TAG, "设置相机预览出错: " + e.getMessage()); // 中文日志
         }
     }
 
+    /**
+     * 停止相机预览并释放资源
+     */
     public void stop() {
         try {
-            mCamera.stopPreview();
-            mCamera.release();
+            mCamera.stopPreview(); // 停止预览
+            mCamera.release();     // 释放相机
         } catch (Exception e) {
-            // ignore: tried to stop a non-existent preview
+            // 忽略：尝试停止一个不存在的预览
         }
     }
 
+    /**
+     * 获取当前帧数据（深拷贝）
+     * @return 当前帧的字节数组
+     */
     public byte[] getFrame() {
         if (mCurrentFrame == null)
             return null;
@@ -77,23 +87,31 @@ public class VideoSource implements Camera.PreviewCallback {
         return copyData;
     }
 
+    /**
+     * 预览帧回调
+     * @param data 当前帧数据
+     * @param camera 相机对象
+     */
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        camera.addCallbackBuffer(data);
+        camera.addCallbackBuffer(data); // 重新添加缓冲区，避免内存抖动
         synchronized (mFrameLock) {
             mCurrentFrame = data;
         }
     }
 
-    /** A safe way to get an instance of the Camera object. */
+    /**
+     * 安全获取相机实例的方法
+     * @return Camera对象，若不可用则返回null
+     */
     public static Camera getCameraInstance(){
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
+            c = Camera.open(); // 尝试获取相机实例
         }
         catch (Exception e){
-            // Camera is not available (in use or does not exist)
+            // 相机不可用（被占用或不存在）
         }
-        return c; // returns null if camera is unavailable
+        return c; // 如果不可用则返回null
     }
 }
